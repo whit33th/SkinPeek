@@ -420,6 +420,9 @@ const commands = [
 
 client.on("messageCreate", async (message) => {
   try {
+    console.log(
+      `[DEBUG] messageCreate from ${message.author.tag}: "${message.content}"`,
+    );
     let isAdmin = false;
     if (!config.ownerId) isAdmin = true;
     else
@@ -434,7 +437,10 @@ client.on("messageCreate", async (message) => {
           break;
         }
       }
-    if (!isAdmin) return;
+    if (!isAdmin) {
+      console.log(`[DEBUG] ${message.author.tag} is not admin`);
+      return;
+    }
 
     const content = message.content.replace(
       new RegExp(`<@!?${client.user.id}+> ?`),
@@ -443,7 +449,9 @@ client.on("messageCreate", async (message) => {
     if (!content.startsWith("!")) return;
     console.log(`${message.author.tag} sent admin command ${content}`);
 
-    if (content === "!deploy guild") {
+    const command = content.toLowerCase();
+
+    if (command === "!deploy guild") {
       if (!message.guild) return;
 
       console.log("Deploying commands in guild...");
@@ -455,7 +463,7 @@ client.on("messageCreate", async (message) => {
         );
 
       await message.reply("Deployed in guild!");
-    } else if (content === "!deploy global") {
+    } else if (command === "!deploy global") {
       console.log("Deploying commands...");
 
       await client.application.commands
@@ -463,10 +471,10 @@ client.on("messageCreate", async (message) => {
         .then(() => console.log("Commands deployed globally!"));
 
       await message.reply("Deployed globally!");
-    } else if (content.startsWith("!undeploy")) {
+    } else if (command.startsWith("!undeploy")) {
       console.log("Undeploying commands...");
 
-      if (content === "!undeploy guild") {
+      if (command === "!undeploy guild") {
         if (!message.guild) return;
         await message.guild.commands
           .set([])
@@ -474,7 +482,7 @@ client.on("messageCreate", async (message) => {
             console.log(`Commands undeployed in guild ${message.guild.name}!`),
           );
         await message.reply("Undeployed in guild!");
-      } else if (content === "!undeploy global" || !message.guild) {
+      } else if (command === "!undeploy global" || !message.guild) {
         await client.application.commands
           .set([])
           .then(() => console.log("Commands undeployed globally!"));
