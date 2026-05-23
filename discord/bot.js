@@ -133,6 +133,7 @@ export const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.MessageContent,
   ],
   partials: ["CHANNEL"], // required to receive DMs
   //shards: "auto" // uncomment this to use internal sharding instead of sharding.js
